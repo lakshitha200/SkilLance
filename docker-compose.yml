@@ -1,0 +1,163 @@
+version: "3.9"
+
+services:
+  postgres-auth:
+    image: postgres:15
+    container_name: postgres-auth-container
+#    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lakshitha
+      POSTGRES_PASSWORD: lakshitha12
+      POSTGRES_DB: skillance-auth
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+    networks:
+      - skillance-net
+
+
+  postgres-order:
+    image: postgres:15
+    container_name: postgres-order-container
+#    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lakshitha
+      POSTGRES_PASSWORD: lakshitha12
+      POSTGRES_DB: skillance-orders
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_order_data:/var/lib/postgresql/data
+    networks:
+      - skillance-net
+
+
+  postgres-gig:
+    image: postgres:15
+    container_name: postgres-gig-container
+#    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lakshitha
+      POSTGRES_PASSWORD: lakshitha12
+      POSTGRES_DB: skillance-gigs
+    ports:
+      - "5435:5432"
+    volumes:
+      - postgres_gig_data:/var/lib/postgresql/data
+    networks:
+      - skillance-net
+
+  postgres-payment:
+    image: postgres:15
+    container_name: postgres-payment-container
+    #    restart: unless-stopped
+    environment:
+      POSTGRES_USER: lakshitha
+      POSTGRES_PASSWORD: lakshitha12
+      POSTGRES_DB: skillance-payments
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_payment_data:/var/lib/postgresql/data
+    networks:
+      - skillance-net
+
+
+  service-discovery:
+    build: ./service-discovery
+    ports:
+      - "8761:8761"
+    container_name: service-discovery-container
+#    restart: unless-stopped
+    networks:
+      - skillance-net
+
+  api-gateway:
+    build: ./api-gateway
+    ports:
+      - "8090:8090"
+    container_name: api-gateway-container
+#    restart: unless-stopped
+    depends_on:
+      - service-discovery
+    networks:
+      - skillance-net
+
+  auth-service:
+    build: ./auth-service
+    ports:
+      - "8081:8081"
+    container_name: auth-service-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-auth:5432/skillance-auth
+      SPRING_DATASOURCE_USERNAME: lakshitha
+      SPRING_DATASOURCE_PASSWORD: lakshitha12
+#    restart: unless-stopped
+    depends_on:
+      - postgres-auth
+    networks:
+      - skillance-net
+
+  gig-service:
+    build: ./gig-service
+    ports:
+      - "8082:8082"
+    container_name: gig-service-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-gig:5432/skillance-gigs
+      SPRING_DATASOURCE_USERNAME: lakshitha
+      SPRING_DATASOURCE_PASSWORD: lakshitha12
+    restart: unless-stopped
+    depends_on:
+      - postgres-gig
+    networks:
+      - skillance-net
+
+  order-service:
+    build: ./order-service
+    ports:
+      - "8083:8083"
+    container_name: order-service-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-order:5432/skillance-orders
+      SPRING_DATASOURCE_USERNAME: lakshitha
+      SPRING_DATASOURCE_PASSWORD: lakshitha12
+#    restart: unless-stopped
+    depends_on:
+      - postgres-order
+    networks:
+      - skillance-net
+
+  payment-service:
+    build: ./payment-service
+    ports:
+      - "8084:8084"
+    container_name: payment-service-container
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-payment:5432/skillance-payments
+      SPRING_DATASOURCE_USERNAME: lakshitha
+      SPRING_DATASOURCE_PASSWORD: lakshitha12
+#    restart: unless-stopped
+    depends_on:
+      - postgres-payment
+    networks:
+      - skillance-net
+
+#  notification-service:
+#    build: ./notification-service
+#    ports:
+#      - "8085:8085"
+#    container_name: notification-service-container
+#    restart: unless-stopped
+#    depends_on:
+#      - service-discovery
+
+volumes:
+  postgres_auth_data:
+  postgres_gig_data:
+  postgres_order_data:
+  postgres_payment_data:
+
+networks:
+  skillance-net:

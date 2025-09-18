@@ -37,5 +37,17 @@ jobs:
 #      - name: Log in to Docker Hub
 #        uses: docker/login-action@v2
 #        with:
-#          username: ${{ secrets.DOCKER_USERNAME }}
+#          username: ${{ secrets.DOCKER_HUB_USERNAME }}
 #          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+#
+#      # Step 6:2: Build & Push Docker image to Docker Hub
+#      - name: Build & Push Docker image to Docker Hub
+#        uses: docker/build-push-action@v3
+#        with:
+#          context: ./service-discovery
+#          dockerfile: Dockerfile
+#          push: true    # image will be pushed to Docker Hub after it’s built
+#          tags: |
+#            ${{ secrets.DOCKER_HUB_USERNAME }}/skillance-service-discovery:latest
+#            ${{ secrets.DOCKER_HUB_USERNAME }}/skillance-service-discovery:${{ github.run_number }}
+
