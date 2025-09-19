@@ -1,4 +1,4 @@
-# Shil-Lance Full Microservices Project Architecture
+# SKil-Lance Full Microservices Project Architecture
 
 ![Skillance (1)](https://github.com/user-attachments/assets/396cb000-d7c2-459a-a75c-135f56e39dc0)
 
