@@ -1,0 +1,80 @@
+export const gigs = [
+  {
+    "id": 1,
+    "title": "REST API Development",
+    "description": "I will develop scalable REST APIs using Spring Boot and microservices architecture",
+    "badge": "API Gateway",
+    "icon": "fa-solid fa-laptop-code",
+    "gradient": "from-blue-500 to-indigo-600",
+    "user": "JohnDev",
+    "price": 45,
+    "rating": 4.5,
+    "reviews": 128,
+    "image": "services-images/API-1.png"
+  },
+  {
+    "id": 2,
+    "title": "UI/UX Design",
+    "description": "I will design modern and user-friendly interfaces for your web applications",
+    "badge": "User Service",
+    "icon": "fa-solid fa-paint-brush",
+    "gradient": "from-purple-500 to-pink-600",
+    "user": "DesignExpert",
+    "price": 35,
+    "rating": 5,
+    "reviews": 98,
+    "image": "services-images/uiux.png"
+  },
+  {
+    "id": 3,
+    "title": "Database Design",
+    "description": "I will design efficient database schemas for your microservices architecture",
+    "badge": "Database",
+    "icon": "fa-solid fa-database",
+    "gradient": "from-green-500 to-teal-600",
+    "user": "DataGuru",
+    "price": 55,
+    "rating": 4,
+    "reviews": 64,
+    "image": "services-images/database.png"
+  },
+  {
+    "id": 4,
+    "title": "Mobile App Development",
+    "description": "I will develop a cross-platform mobile app using React Native",
+    "badge": "Mobile",
+    "icon": "fa-solid fa-mobile-screen-button",
+    "gradient": "from-red-500 to-orange-600",
+    "user": "AppBuilder",
+    "price": 75,
+    "rating": 4.5,
+    "reviews": 142,
+    "image": "services-images/mobile.png"
+  },
+  {
+    "id": 5,
+    "title": "SEO Optimization",
+    "description": "I will optimize your website for search engines and improve your ranking",
+    "badge": "SEO",
+    "icon": "fa-solid fa-chart-simple",
+    "gradient": "from-yellow-500 to-amber-600",
+    "user": "SEOWizard",
+    "price": 40,
+    "rating": 4,
+    "reviews": 87,
+    "image": "services-images/seo.jpg"
+  },
+  {
+    "id": 6,
+    "title": "Cloud Deployment",
+    "description": "I will deploy your application to AWS, Azure, or Google Cloud",
+    "badge": "Cloud",
+    "icon": "fa-solid fa-cloud",
+    "gradient": "from-indigo-500 to-purple-600",
+    "user": "CloudMaster",
+    "price": 65,
+    "rating": 5,
+    "reviews": 112,
+    "image": "services-images/cloud.png"
+  }
+]
