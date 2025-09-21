@@ -5,6 +5,7 @@ import com.skillance.Model.User;
 import com.skillance.Model.UserDto;
 import com.skillance.Repository.UserRepository;
 import com.skillance.Security.JwtUtil;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,6 +29,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
+    @RateLimiter(name = "AUTH-SERVICE", fallbackMethod = "rateLimiterFallbackSignUP")
     public ResponseEntity<String> register(@RequestBody User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             return ResponseEntity.badRequest().body("Username already exists!");
@@ -38,6 +40,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
+    @RateLimiter(name = "AUTH-SERVICE", fallbackMethod = "rateLimiterFallbackSignIN")
     public ResponseEntity<ResponseDto> login(@RequestBody User user) {
 
         User existingUser = userRepository.findByEmail(user.getEmail())
@@ -56,5 +59,19 @@ public class AuthController {
                 .token(token)
                 .build(), HttpStatus.OK);
     }
+
+    // Fallback
+    public ResponseEntity<String> rateLimiterFallbackSignUP(User user, Throwable t) {
+        return ResponseEntity.ok("Too many attempts, please try again later.");
+    }
+
+    public ResponseEntity<ResponseDto>rateLimiterFallbackSignIN(User user, Throwable t) {
+        ResponseDto responseDto = new ResponseDto();
+        responseDto.setUserDto(null);
+        responseDto.setToken(null);
+        responseDto.setMessage("Too many attempts, please try again later.");
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
 }
 

@@ -69,7 +69,7 @@ public class GigServiceImpl implements GigService {
                 .gig(gig)
                 .build();
         packageRepository.save(pkg);
-        return "";
+        return "Packages added.";
     }
 
     @Override

@@ -2,17 +2,20 @@ package com.skillance.Service;
 
 import com.skillance.Clients.GigClient;
 import com.skillance.Clients.PaymentClient;
-import com.skillance.Dto.OrderRequest;
-import com.skillance.Dto.OrderResponse;
-import com.skillance.Dto.PaymentRequest;
-import com.skillance.Dto.PaymentResponse;
+import com.skillance.Dto.*;
 import com.skillance.Model.Order;
 import com.skillance.Repository.OrderRepository;
 import com.skillance.Util.OrderMapper;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,15 +23,19 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
-    private final GigClient gigClient;
-    private final PaymentClient paymentClient;
+    private final GigService gigService;
+    private final PaymentService paymentService;
 
     @Override
     public OrderResponse createOrder(OrderRequest request) {
 
         request.getItems().stream()
                 .forEach((item)->{
-                    if (!gigClient.existsById(item.getProductId())) {
+                    GigResponse result = gigService.existsByGigId(item.getProductId());
+                    if (result.getFallbackMessage()!=null) {
+                        throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, result.getFallbackMessage());
+                    }
+                    if (!result.isExists()) {
                         throw new RuntimeException("Gig not found");
                     }
                 });
@@ -36,13 +43,10 @@ public class OrderServiceImpl implements OrderService {
         Order order = OrderMapper.toEntity(request);
         Order saved = orderRepository.save(order);
 
-        PaymentResponse payment = paymentClient.createPayment(
-                new PaymentRequest(order.getId(), order.getTotalPrice().doubleValue())
-        );
+        PaymentResponse payment = paymentService.createPayment(saved);
+        if(payment.getFallbackMessage()!=null) throw new ResponseStatusException(HttpStatus.SERVICE_UNAVAILABLE, payment.getFallbackMessage());
 
-        if(payment.getStatus().equals("SUCCESS")){
-            updateStatus(order.getId(),payment.getStatus());
-        }
+        if(payment.getStatus().equals("SUCCESS")) updateStatus(order.getId(),payment.getStatus());
 
         return OrderMapper.toDto(saved);
     }

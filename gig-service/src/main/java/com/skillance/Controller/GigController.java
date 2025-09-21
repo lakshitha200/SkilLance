@@ -16,7 +16,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/gigs")
-@CrossOrigin("*")
 @RequiredArgsConstructor
 public class GigController {
 

@@ -1,12 +1,38 @@
+server:
+  port: 8081
+
 spring:
   application:
     name: AUTH-SERVICE
 
-server:
-  port: 8081
+  config:
+    activate:
+      on-profile: dev
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://service-discovery:8761/eureka/
-#      defaultZone: http://localhost:8761/eureka/
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus   # expose actuator endpoints
+  endpoint:
+    health:
+      show-details: always
+
+resilience4j:
+  ratelimiter:
+    instances:
+      AUTH-SERVICE:
+        limitForPeriod: 1      # max 1 calls
+        limitRefreshPeriod: 10s  # refresh limit every 10 seconds
+        timeoutDuration: 0    #  block immediately if limit exceeded

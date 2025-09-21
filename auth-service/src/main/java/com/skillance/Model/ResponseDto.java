@@ -10,4 +10,5 @@ import lombok.*;
 public class ResponseDto {
     private UserDto userDto;
     private String token;
+    private String message;
 }

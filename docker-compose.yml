@@ -114,35 +114,35 @@ services:
     networks:
       - skillance-net
 
-  order-service:
-    build: ./order-service
-    ports:
-      - "8083:8083"
-    container_name: order-service-container
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-order:5432/skillance-orders
-      SPRING_DATASOURCE_USERNAME: lakshitha
-      SPRING_DATASOURCE_PASSWORD: lakshitha12
-#    restart: unless-stopped
-    depends_on:
-      - postgres-order
-    networks:
-      - skillance-net
+#  order-service:
+#    build: ./order-service
+#    ports:
+#      - "8083:8083"
+#    container_name: order-service-container
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-order:5432/skillance-orders
+#      SPRING_DATASOURCE_USERNAME: lakshitha
+#      SPRING_DATASOURCE_PASSWORD: lakshitha12
+##    restart: unless-stopped
+#    depends_on:
+#      - postgres-order
+#    networks:
+#      - skillance-net
 
-  payment-service:
-    build: ./payment-service
-    ports:
-      - "8084:8084"
-    container_name: payment-service-container
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-payment:5432/skillance-payments
-      SPRING_DATASOURCE_USERNAME: lakshitha
-      SPRING_DATASOURCE_PASSWORD: lakshitha12
-#    restart: unless-stopped
-    depends_on:
-      - postgres-payment
-    networks:
-      - skillance-net
+#  payment-service:
+#    build: ./payment-service
+#    ports:
+#      - "8084:8084"
+#    container_name: payment-service-container
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-payment:5432/skillance-payments
+#      SPRING_DATASOURCE_USERNAME: lakshitha
+#      SPRING_DATASOURCE_PASSWORD: lakshitha12
+##    restart: unless-stopped
+#    depends_on:
+#      - postgres-payment
+#    networks:
+#      - skillance-net
 
 #  notification-service:
 #    build: ./notification-service
@@ -156,8 +156,8 @@ services:
 volumes:
   postgres_auth_data:
   postgres_gig_data:
-  postgres_order_data:
-  postgres_payment_data:
+#  postgres_order_data:
+#  postgres_payment_data:
 
 networks:
   skillance-net:
